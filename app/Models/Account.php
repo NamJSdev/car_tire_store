@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 
-class Account extends Model
+class Account extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'email',
@@ -19,12 +20,13 @@ class Account extends Model
 
     protected $hidden = [
         'password',
+        'remember_token',
     ];
-
     public function setMatKhauAttribute($value)
     {
         $this->attributes['password'] = Hash::make($value);
     }
+
     public function role()
     {
         return $this->belongsTo(Role::class, 'roleID');

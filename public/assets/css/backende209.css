@@ -17850,7 +17850,7 @@ label {
     vertical-align: middle;
 }
 .form-control {
-    height: 45px;
+    height: 50px;
     line-height: 45px;
     background: #fff;
     border: 1px solid #dcdfe8;
@@ -24024,5 +24024,10 @@ i {
         margin-left: 10px;
     }
 }
-
+.truncated-text {
+    max-width: 150px; /* Chỉnh chiều rộng tối đa theo nhu cầu */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 /*# sourceMappingURL=maps/backend.css.map */

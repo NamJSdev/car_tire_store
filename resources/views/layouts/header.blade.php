@@ -15,7 +15,7 @@
           </a>
         </div>
         <div class="iq-search-bar device-search">
-          <form action="#" class="searchbox">
+          {{-- <form action="#" class="searchbox">
             <a class="search-link" href="#"
               ><i class="ri-search-line"></i
             ></a>
@@ -24,7 +24,7 @@
               class="text search-input"
               placeholder="Tìm kiếm..."
             />
-          </form>
+          </form> --}}
         </div>
         <div class="d-flex align-items-center">
           <button
@@ -246,19 +246,17 @@
                         />
                       </div>
                       <div class="p-3">
-                        <h5 class="mb-1">JoanDuo@property.com</h5>
-                        <p class="mb-0">Since 10 march, 2020</p>
+                        <h5 class="mb-1">{{ Auth::user()->email }}</h5>
+                        <p class="mb-0">Xin chào, {{ Auth::user()->info->name }}</p>
                         <div
                           class="d-flex align-items-center justify-content-center mt-3"
                         >
-                          <a
-                            href="https://templates.iqonic.design/posdash/html/app/user-profile.html"
-                            class="btn border mr-2"
-                            >Profile</a
-                          >
-                          <a href="auth-sign-in.html" class="btn border"
-                            >Sign Out</a
-                          >
+                          <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="dropdown-item border" href="#" data-toggle="modal" data-target="#logoutModal">
+                                Đăng Xuất
+                            </button>
+                        </form>
                         </div>
                       </div>
                     </div>

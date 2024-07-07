@@ -22,7 +22,7 @@ return new class extends Migration
         $table->integer('tonKho');
         $table->integer('luongBan')->default(0);
         $table->text('desc')->nullable();
-        $table->string('thueID')->nullable();
+        $table->string('thoiGianBaoHanh')->nullable();
         $table->unsignedBigInteger('categoryID');
         $table->foreign('categoryID')->references('id')->on('categories');
         $table->string('status');

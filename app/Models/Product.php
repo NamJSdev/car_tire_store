@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+
 
 class Product extends Model
 {
@@ -19,7 +21,7 @@ class Product extends Model
         'tonKho',
         'luongBan',
         'desc',
-        'thueID',
+        'thoiGianBaoHanh',
         'categoryID',
         'status',
         'warrantyStatus',
@@ -33,11 +35,21 @@ class Product extends Model
     public function orders()
     {
         return $this->belongsToMany(Order::class, 'OrderAndProduct', 'productID', 'orderID')
-                    ->withPivot('soLuong', 'thanhTien');
+            ->withPivot('soLuong', 'thanhTien');
     }
 
     public function warranties()
     {
         return $this->hasMany(Warranty::class, 'productID');
+    }
+
+    public static function generateUniqueMaHang()
+    {
+        do {
+            // Sinh mã ngẫu nhiên với phần đầu là "MH" và phần sau là các số ngẫu nhiên
+            $maHang = 'SP' . mt_rand(10000000, 99999999);
+        } while (self::where('maHang', $maHang)->exists());
+
+        return $maHang;
     }
 }

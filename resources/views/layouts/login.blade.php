@@ -8,7 +8,6 @@
     />
     <title>@yield('title')</title>
 
-    
     <!-- Favicon -->
     <link
     rel="shortcut icon"
@@ -26,37 +25,11 @@
     rel="stylesheet"
     href="{{asset('assets/vendor/remixicon/fonts/remixicon.css')}}"
     />
-    <style>
-        .alert {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1050;
-            min-width: 300px;
-        }
-    </style>
 </head>
 <body>
     <div class="wrapper">
-        @include('layouts.sider-bar')
-        @include('layouts.header')
-        <div class="content-page">
-            <div class="container-fluid">
-                @if(Session::has('success'))
-                    <div id="alert" class="alert alert-success" role="alert">
-                        {{ Session::get('success') }}
-                    </div>
-                @endif
-                @if(Session::has('error'))
-                    <div id="alert" class="alert alert-danger" role="alert">
-                        {{ Session::get('error') }}
-                    </div>
-                @endif
-                @yield('content')
-            </div>
-        </div>
+        @yield('content')
     </div>
-    @include('layouts.footer')
 
     <!-- Backend Bundle JavaScript -->
     <script src="{{asset('assets/js/backend-bundle.min.js')}}"></script>
@@ -72,19 +45,5 @@
 
     <!-- app JavaScript -->
     <script src="{{asset('assets/js/app.js')}}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                let alerts = document.querySelectorAll('.alert');
-                alerts.forEach(function(alert) {
-                    alert.style.transition = 'opacity 0.5s ease';
-                    alert.style.opacity = '0';
-                    setTimeout(function() {
-                        alert.remove();
-                    }, 500);
-                });
-            }, 3000); // 3 giây
-        });
-    </script>
 </body>
 </html>
