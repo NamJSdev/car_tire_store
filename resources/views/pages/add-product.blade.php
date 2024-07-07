@@ -83,15 +83,17 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                      <div class="d-flex justify-content-between">
-                                        <label>Số Lượng Sản Phẩm*</label>
-                                        <div
-                                            class="custom-control custom-checkbox custom-checkbox-color-check custom-control-inline">
-                                            <input type="checkbox" name="status" class="custom-control-input bg-success"
-                                                id="customCheck-2" checked="">
-                                            <label class="custom-control-label font-size-18" for="customCheck-2">Cho Phép Bán</label>
+                                        <div class="d-flex justify-content-between">
+                                            <label>Số Lượng Sản Phẩm*</label>
+                                            <div
+                                                class="custom-control custom-checkbox custom-checkbox-color-check custom-control-inline">
+                                                <input type="checkbox" name="status"
+                                                    class="custom-control-input bg-success" id="customCheck-2"
+                                                    checked="">
+                                                <label class="custom-control-label font-size-18" for="customCheck-2">Cho
+                                                    Phép Bán</label>
+                                            </div>
                                         </div>
-                                      </div>
                                         <input type="text" name="tonKho" class="form-control"
                                             placeholder="Nhập Số Lượng" required />
                                         <div class="help-block with-errors"></div>

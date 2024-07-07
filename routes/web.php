@@ -54,3 +54,5 @@ Route::get('/san-pham/form-khoi-tao', [ProductController::class, 'create'])->nam
 Route::post('/san-pham', [ProductController::class, 'store'])->name('products.store')->middleware('auth');
 Route::get('/san-pham/danh-sach-san-pham', [ProductController::class, 'index'])->name('products.index')->middleware('auth');
 Route::get('/san-pham/danh-sach-san-pham/search', [ProductController::class, 'search'])->name('products.search')->middleware('auth');
+Route::post('/san-pham/xoa-san-pham', [ProductController::class, 'delete'])->name('products.delete')->middleware('auth');
+Route::post('/san-pham/sua-san-pham', [ProductController::class, 'update'])->name('products.update')->middleware('auth');
