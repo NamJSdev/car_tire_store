@@ -53,3 +53,4 @@ Route::post('/danh-muc-nhanh', [CategoryController::class, 'storeQuick'])->name(
 Route::get('/san-pham/form-khoi-tao', [ProductController::class, 'create'])->name('products.create')->middleware('auth');
 Route::post('/san-pham', [ProductController::class, 'store'])->name('products.store')->middleware('auth');
 Route::get('/san-pham/danh-sach-san-pham', [ProductController::class, 'index'])->name('products.index')->middleware('auth');
+Route::get('/san-pham/danh-sach-san-pham/search', [ProductController::class, 'search'])->name('products.search')->middleware('auth');

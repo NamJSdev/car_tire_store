@@ -11,8 +11,33 @@ class ProductController extends Controller
     public function index()
     {
         $datas = Product::orderBy('created_at', 'desc')->paginate(10);
+
+        if (request()->ajax()) {
+            return view('partials.product_table', compact('datas'));
+        }
+
         return view('pages.product', compact('datas'));
     }
+
+    public function search(Request $request)
+    {
+        $query = Product::query();
+
+        if ($request->has('search') && $request->input('search') != '') {
+            $search = $request->input('search');
+            $query->where('tenHang', 'like', "%{$search}%")
+                ->orWhere('maHang', 'like', "%{$search}%");
+        }
+
+        $datas = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        if ($request->ajax()) {
+            return view('partials.product_table', compact('datas'));
+        }
+
+        return view('pages.product', compact('datas'));
+    }
+
     public function create()
     {
         $categories = Category::all();
@@ -35,7 +60,7 @@ class ProductController extends Controller
             'status' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        
+
         //Gọi hàm generateUniqueMaHang để sinh mã hàng ngẫu nhiên
         $maHang = Product::generateUniqueMaHang();
 
