@@ -12,7 +12,7 @@ class ProductController extends Controller
     {
         $categories = Category::all();
         $query = Product::query();
-        $datas = $query->paginate(10);
+        $datas = $query->orderBy('created_at', 'desc')->paginate(10);
         return view('pages.product', compact('datas', 'categories'));
     }
 
@@ -140,7 +140,7 @@ class ProductController extends Controller
         if ($request->has('tonKho') && $request->input('tonKho') != '') {
             $product->tonKho = $request->input('tonKho');
         }
-        
+
         if ($request->has('desc') && $request->input('desc') != '') {
             $product->desc = $request->input('desc');
         }
@@ -156,7 +156,7 @@ class ProductController extends Controller
         if ($request->has('status') && $request->input('status') != '') {
             $product->status = $request->input('status');
         }
-        
+
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('images', 'public');
             $product->image = $imagePath;

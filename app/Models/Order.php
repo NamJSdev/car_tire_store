@@ -15,7 +15,9 @@ class Order extends Model
         'price',
         'customerID',
         'accountID',
-        'paymentID',
+        'cash',
+        'payCash',
+        'tienNo',
         'ngayTao',
         'capNhat',
         'status',
@@ -45,5 +47,29 @@ class Order extends Model
     public function warranties()
     {
         return $this->hasMany(Warranty::class, 'orderID');
+    }
+
+    public static function generateUniqueMaDonHang()
+    {
+        // Lấy mã hàng lớn nhất hiện tại trong cơ sở dữ liệu có dạng "DH" và 5 số
+        $lastMaHang = self::where('maDonHang', 'like', 'DH%')
+            ->orderBy('maDonHang', 'desc')
+            ->first();
+
+        if ($lastMaHang) {
+            // Tách phần số từ mã hàng lớn nhất
+            $lastNumber = (int) substr($lastMaHang->maDonHang, 2);
+
+            // Tạo mã hàng mới với số lớn hơn một
+            $newNumber = $lastNumber + 1;
+
+            // Định dạng mã hàng mới với 5 số, thêm phần đầu "SP"
+            $newMaHang = 'DH' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+        } else {
+            // Nếu không có mã hàng nào, bắt đầu từ "SP00001"
+            $newMaHang = 'DH00001';
+        }
+
+        return $newMaHang;
     }
 }

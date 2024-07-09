@@ -4,7 +4,7 @@
             <img src="../assets/images/logo.png" class="img-fluid rounded-normal light-logo" alt="logo" />
             <h5 class="logo-title light-logo">TireStore</h5>
         </a>
-        <div class="iq-menu-bt-sidebar ml-3">
+        <div class="iq-menu-bt-sidebar ml-2">
             <i class="las la-bars wrapper-menu"></i>
         </div>
     </div>
@@ -25,8 +25,8 @@
                         <span class="ml-4">Tổng Quan</span>
                     </a>
                 </li>
-                <li class="">
-                    <a href="page-report.html" class="">
+                <li class="{{ request()->is('thu-ngan') ? 'active' : '' }}">
+                    <a href="{{ route('cashiers.index') }}" class="">
                         <svg class="svg-icon" id="p-dash4" width="20" height="20"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -38,8 +38,8 @@
                     </a>
                     <ul id="reports" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle"></ul>
                 </li>
-                <li class="">
-                    <a href="page-report.html" class="">
+                <li class="{{ request()->is('don-hang') ? 'active' : '' }}">
+                    <a href="{{route('orders.index')}}" class="">
                         <svg class="svg-icon" id="p-dash2" width="20" height="20"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

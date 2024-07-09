@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class OrderAndProduct extends Pivot
 {
-    protected $table = 'OrderAndProduct';
+    protected $table = 'order_and_product';
 
     protected $fillable = [
         'orderID',
         'productID',
         'soLuong',
         'thanhTien',
+        'donGia',
     ];
 }

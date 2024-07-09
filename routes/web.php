@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CashierController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -56,3 +58,12 @@ Route::get('/san-pham/danh-sach-san-pham', [ProductController::class, 'index'])-
 Route::get('/san-pham/danh-sach-san-pham/search', [ProductController::class, 'search'])->name('products.search')->middleware('auth');
 Route::post('/san-pham/xoa-san-pham', [ProductController::class, 'delete'])->name('products.delete')->middleware('auth');
 Route::post('/san-pham/sua-san-pham', [ProductController::class, 'update'])->name('products.update')->middleware('auth');
+
+// Route xử lý thu ngân tạo đơn hàng
+Route::get('/thu-ngan', [CashierController::class, 'index'])->name('cashiers.index')->middleware('auth');
+
+// Route xử lý đơn hàng
+Route::get('/don-hang', [OrderController::class, 'index'])->name('orders.index')->middleware('auth');
+Route::get('/products/default', [CashierController::class, 'defaultProducts'])->name('products.default')->middleware('auth');
+Route::get('/products/search', [CashierController::class, 'search'])->name('cashiers.search')->middleware('auth');
+Route::post('/don-hang/tao-don-hang', [OrderController::class, 'store'])->name('orders.store')->middleware('auth');

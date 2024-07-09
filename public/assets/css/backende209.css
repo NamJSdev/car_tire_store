@@ -9144,7 +9144,7 @@ a.text-light-gray:focus {
     -o-transition: all 0.6s ease-in-out;
     transition: all 0.6s ease-in-out;
 }
-@media (min-width: 1300px) {
+@media (min-width: 1599px) {
     .iq-top-navbar .iq-navbar-custom .wrapper-menu {
         display: none;
     }
@@ -9239,7 +9239,7 @@ a.text-light-gray:focus {
         display: none;
     }
 }
-@media (max-width: 1299px) {
+@media (max-width: 1599px) {
     .iq-sidebar {
         display: inline-block;
         z-index: 99;
@@ -9849,7 +9849,7 @@ body.sidebar-main .iq-top-navbar {
     border: 0;
     background: #fff;
 }
-@media (min-width: 1300px) {
+@media (min-width: 1599px) {
     .iq-navbar-logo {
         display: none !important;
     }
@@ -9865,7 +9865,7 @@ body.sidebar-main .iq-top-navbar {
         width: 320px;
     }
 }
-@media (max-width: 1299px) {
+@media (max-width: 1599px) {
     .iq-top-navbar {
         width: 100%;
     }
@@ -10089,7 +10089,7 @@ body.sidebar-main .iq-top-navbar {
         width: calc(100vw - 260px);
     }
 }
-@media (min-width: 1300px) and (max-width: 1499px) {
+@media (min-width: 1300px) and (max-width: 1599px) {
     .right-sidebar-mini {
         transform: translateX(calc(111% + -8em));
     }
@@ -12654,13 +12654,13 @@ body.tab-horizontal .iq-footer {
 .iq-card-body.banner-box {
     padding-bottom: 0;
 }
-@media (min-width: 1300px) {
+@media (min-width: 1599px) {
     body.sidebar-main .iq-footer {
         margin-left: 70px;
         width: calc(100vw - 74px);
     }
 }
-@media (max-width: 1299px) {
+@media (max-width: 1599px) {
     .iq-footer {
         padding: 0px 15px;
         margin-left: 0;
@@ -12687,7 +12687,7 @@ body.tab-horizontal .iq-footer {
 .clear {
     clear: both;
 }
-@media (min-width: 1300px) {
+@media (min-width: 1599px) {
     .iq-menu-horizontal .iq-sidebar-menu li .iq-submenu.iq-submenu-data {
         position: static;
     }
@@ -12808,7 +12808,7 @@ body.tab-horizontal .iq-footer {
         transform: rotate(0deg);
     }
 }
-@media (max-width: 1299px) {
+@media (max-width: 1599px) {
     .iq-menu-horizontal {
         position: fixed;
         left: 0;
@@ -17795,7 +17795,7 @@ g[aria-describedby="id-22-description"] {
     -o-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
 }
-@media (min-width: 1300px) {
+@media (min-width: 1599px) {
     body.sidebar-main .content-page {
         margin-left: 70px;
     }
@@ -17806,7 +17806,7 @@ g[aria-describedby="id-22-description"] {
         padding-left: 0;
     }
 }
-@media (max-width: 1299px) {
+@media (max-width: 1599px) {
     .content-page {
         margin-left: 0;
         padding: 100px 15px 0;
@@ -24020,3 +24020,51 @@ i {
     display: none !important;
 }
 /*# sourceMappingURL=maps/backend.css.map */
+
+#pos div.main-content {
+    margin-top: 60px;
+    margin-left: 1%;
+    font-size: 14px;
+}
+#pos div.main-content div.alert {
+    border-radius: 0;
+    box-shadow: none;
+}
+#pos .ajax-error {
+    width: 350px;
+    background-color: rgba(143, 42, 25, 0.8);
+    position: fixed;
+    top: 50px;
+    right: 0px;
+    z-index: 9999;
+    padding: 15px;
+    color: #fff;
+    display: none;
+    line-height: 1.8;
+    font-size: 13px;
+}
+#pos .ajax-success {
+    position: fixed;
+    top: 50px;
+    right: 0px;
+    z-index: 9999;
+    font-size: 13px;
+    text-align: justify;
+}
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield; /* Loại bỏ các spinner trên Firefox */
+}
+
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none; /* Loại bỏ các spinner trên Chrome, Safari, Edge, Opera */
+    margin: 0; /* Loại bỏ margin mặc định nếu có */
+}
+
+/* General */
+input[type="number"] {
+    -moz-appearance: textfield; /* Loại bỏ các spinner trên Firefox */
+    appearance: textfield; /* Áp dụng cho các trình duyệt hỗ trợ chuẩn mới */
+}

@@ -45,11 +45,25 @@ class Product extends Model
 
     public static function generateUniqueMaHang()
     {
-        do {
-            // Sinh mã ngẫu nhiên với phần đầu là "MH" và phần sau là các số ngẫu nhiên
-            $maHang = 'SP' . mt_rand(10000000, 99999999);
-        } while (self::where('maHang', $maHang)->exists());
+        // Lấy mã hàng lớn nhất hiện tại trong cơ sở dữ liệu có dạng "SP" và 5 số
+        $lastMaHang = self::where('maHang', 'like', 'SP%')
+            ->orderBy('maHang', 'desc')
+            ->first();
 
-        return $maHang;
+        if ($lastMaHang) {
+            // Tách phần số từ mã hàng lớn nhất
+            $lastNumber = (int) substr($lastMaHang->maHang, 2);
+
+            // Tạo mã hàng mới với số lớn hơn một
+            $newNumber = $lastNumber + 1;
+
+            // Định dạng mã hàng mới với 5 số, thêm phần đầu "SP"
+            $newMaHang = 'SP' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+        } else {
+            // Nếu không có mã hàng nào, bắt đầu từ "SP00001"
+            $newMaHang = 'SP00001';
+        }
+
+        return $newMaHang;
     }
 }
