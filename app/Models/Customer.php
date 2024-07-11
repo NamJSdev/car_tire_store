@@ -24,4 +24,8 @@ class Customer extends Model
     {
         return $this->hasMany(Order::class, 'customerID');
     }
+    public function orderProducts()
+    {
+        return $this->hasManyThrough(OrderAndProduct::class, Order::class, 'customerID', 'orderID', 'id', 'id');
+    }
 }

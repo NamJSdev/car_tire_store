@@ -15,4 +15,9 @@ class OrderAndProduct extends Pivot
         'thanhTien',
         'donGia',
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'productID', 'id');
+    }
 }

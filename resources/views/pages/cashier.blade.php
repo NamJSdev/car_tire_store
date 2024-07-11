@@ -19,6 +19,7 @@
                                             <th>Ảnh</th>
                                             <th>Mã hàng</th>
                                             <th>Tên</th>
+                                            <th>Tồn Kho</th>
                                             <th>Giá bán</th>
                                             <th>Thao tác</th>
                                         </tr>
@@ -124,18 +125,24 @@
                             <div class="col-md-6 d-flex align-items-center">
                                 <label class="mb-0"><i class="la la-money font-size-20"></i> Tiền Mặt:</label>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4 pr-0">
                                 <input type="number" id="cash-amount" class="form-control text-right"
-                                    placeholder="Tiền Mặt" />
+                                    placeholder="Tiền Mặt" style="border-top-right-radius: 0%;border-bottom-right-radius: 0%;"/>
+                            </div>
+                            <div class="col-md-2 mb-0 d-flex align-items-center justify-content-center pl-0">
+                                <button id="max-cash" class="btn btn-info w-100 ml-0 h-100" style="border-top-left-radius: 0%;border-bottom-left-radius: 0%;">Max</button>
                             </div>
                         </div>
                         <div class="form-group marg-bot-10 clearfix row">
                             <div class="col-md-6 d-flex align-items-center">
                                 <label class="mb-0"><i class="la la-bank font-size-20"></i> Chuyển Khoản:</label>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4 pr-0">
                                 <input type="number" id="bank-amount" class="form-control text-right"
-                                    placeholder="Chuyển Khoản" />
+                                    placeholder="Chuyển Khoản" style="border-top-right-radius: 0%;border-bottom-right-radius: 0%;"/>
+                            </div>
+                            <div class="col-md-2 mb-0 d-flex align-items-center justify-content-center pl-0">
+                                <button id="max-pay" class="btn btn-info w-100 ml-0 h-100" style="border-top-left-radius: 0%;border-bottom-left-radius: 0%;">Max</button>
                             </div>
                         </div>
                         <hr>
@@ -160,29 +167,27 @@
                         <div class="form-group marg-bot-10 clearfix row pr-2 pl-3">
                             <input type="text" name="desc" class="form-control" placeholder="Ghi chú đơn hàng" />
                         </div>
-                        <div class="form-group marg-bot-10 clearfix row pr-2 pl-3">
-                            <div class="col-md-6 pl-0">
+                        <div class="form-group marg-bot-10 clearfix row pr-1">
+                            {{-- <div class="col-md-6 pl-0">
                                 <button type="button" class="btn btn-primary w-100">
                                     <i class="fa fa-print font-size-20"></i> In Tạm Tính
                                 </button>
-                            </div>
-                            <div class="col-md-6 pr-0">
-                                <button type="button" class="btn btn-primary w-100">
+                            </div> --}}
+                            <div class="col-md-12 pr-0">
+                                {{-- <button type="button" class="btn btn-primary w-100">
                                     <i class="fa fa-angry font-size-20"></i> Quan Tâm
+                                </button> --}}
+                                <button id="submit-order" type="button" class="btn btn-primary w-100">
+                                    Thanh Toán
                                 </button>
                             </div>
-                        </div>
-                        <div class="form-group marg-bot-10 clearfix row pr-2 pl-3">
-                            <button id="submit-order" type="button" class="btn btn-primary w-100">
-                                Thanh Toán
-                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -207,6 +212,7 @@
                                             <td><img src="${imageUrl}" class="img-fluid rounded avatar-50 mr-3" alt="image" /></td>
                                             <td>${product.maHang}</td>
                                             <td>${product.tenHang}</td>
+                                            <td>${product.tonKho}</td>
                                             <td>${formatCurrency(parseInt(product.giaBan))}</td>
                                             <td>
                                                 <button class="btn btn-primary add-to-order" data-product='${JSON.stringify(product)}'>
@@ -312,6 +318,12 @@
                 });
                 $('#total-amount').val(formatCurrency(totalAmount));
                 $('#amount-to-pay').val(formatCurrency(totalAmount));
+                $('#max-cash').on('click', function() {
+                    $('#cash-amount').val(totalAmount);
+                });
+                $('#max-pay').on('click', function() {
+                    $('#bank-amount').val(totalAmount);
+                });
                 updateChangeAmount();
             }
 
@@ -398,12 +410,14 @@
             $('.product-results tbody tr').each(function() {
                 var productId = $(this).attr('data-id');
                 var quantity = $(this).find('.quantity-input').val();
+                var maHang = $(this).find('td').eq(1).text();
                 var unitPrice = parseFloat($(this).find('td').eq(5).text().replace(/\./g, '').replace(' đ',
                     ''));
                 var totalPrice = parseFloat($(this).find('td').eq(6).text().replace(/\./g, '').replace(' đ',
                     ''));
                 orderData.push({
                     id: productId,
+                    maHang: maHang,
                     quantity: quantity,
                     unit_price: unitPrice,
                     total_price: totalPrice
@@ -432,8 +446,10 @@
                 },
                 success: function(response) {
                     alert('Đơn hàng đã được tạo thành công!');
-                    // Xử lý sau khi gửi đơn hàng thành công
-                    console.log(response);
+                    // Mở hóa đơn trong tab mới
+                    window.open('{{ route('print.invoice', ['orderId' => ':orderId']) }}'.replace(':orderId', response.order_id), '_blank');
+
+                    location.reload();
                 },
                 error: function(response) {
                     alert('Có lỗi xảy ra khi gửi đơn hàng.');

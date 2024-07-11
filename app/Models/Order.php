@@ -40,15 +40,15 @@ class Order extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'OrderAndProduct', 'orderID', 'productID')
-                    ->withPivot('soLuong', 'thanhTien');
+        return $this->belongsToMany(Product::class, 'order_and_product', 'orderID', 'productID')
+            ->withPivot('soLuong', 'thanhTien', 'donGia');
     }
 
     public function warranties()
     {
         return $this->hasMany(Warranty::class, 'orderID');
     }
-
+    
     public static function generateUniqueMaDonHang()
     {
         // Lấy mã hàng lớn nhất hiện tại trong cơ sở dữ liệu có dạng "DH" và 5 số

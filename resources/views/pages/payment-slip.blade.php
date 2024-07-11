@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Khách Hàng')
+@section('title', 'Quản Lý Nhập Chi')
 
 @section('content')
     <div class="container-fluid">
@@ -7,10 +7,10 @@
             <div class="col-lg-12">
                 <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
                     <div>
-                        <h4 class="mb-3">Danh Sách Khách Hàng</h4>
+                        <h4 class="mb-3">Danh Sách Nhập Chi Tiền Mặt</h4>
                     </div>
-                    <a href="{{ route('create-form') }}" class="btn btn-primary add-list"><i class="las la-plus"></i>Thêm Mới
-                        Khách Hàng</a>
+                    <a href="#" class="btn btn-primary add-list add" data-toggle="modal" data-target="#addModal"><i
+                            class="las la-plus"></i>Tạo Phiếu</a>
                 </div>
             </div>
             <div class="col-lg-12">
@@ -19,16 +19,11 @@
                         <thead class="bg-white text-uppercase">
                             <tr class="ligth ligth-data">
                                 <th>STT</th>
-                                <th>Tên KH</th>
-                                <th>Giới Tính</th>
-                                <th>Email</th>
-                                <th>SĐT</th>
-                                <th>Ngày Sinh</th>
-                                <th>Đã Mua</th>
-                                <th>Dư Nợ</th>
-                                @if(Auth::user()->roleID == 1) <!-- Admin -->
+                                <th>Phân Loại</th>
+                                <th>Tiền Mặt</th>
+                                <th>Mô Tả</th>
+                                <th>Ngày Lập</th>
                                 <th>Action</th>
-                                @endif
                             </tr>
                         </thead>
                         <tbody class="ligth-body">
@@ -39,28 +34,21 @@
                             @foreach ($datas as $index => $data)
                                 <tr data-id="{{ $data->id }}">
                                     <td>{{ $startIndex + $index }}</td>
-                                    <td>{{ $data->hoTen }}</td>
-                                    <td>{{ $data->gioiTinh }}</td>
-                                    <td>{{ $data->email }}</td>
-                                    <td>{{ $data->sdt }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($data->ngaySinh)->format('d-m-Y') }}</td>
-                                    <td>{{ $data->soSanPhamDaMua }} SP</td>
-                                    <td>{{ number_format($data->duNo, 0, ',', '.') . ' đ' }}</td>
-                                    @if(Auth::user()->roleID == 1) <!-- Admin -->
+                                    <td>{{ $data->name }}</td>
+                                    <td>{{ number_format($data->cash, 0, ',', '.') . ' đ' }}</td>
+                                    <td>{{ $data->desc }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($data->ngayTao)->format('d-m-Y') }}</td>
                                     <td>
                                         <div class="d-flex align-items-center list-action">
                                             <a class="badge bg-success mr-2 edit" href="#" title="Edit"
                                                 data-toggle="modal" data-target="#editModal" data-id="{{ $data->id }}"
-                                                data-name="{{ $data->hoTen }}" data-sex="{{ $data->gioiTinh }}"
-                                                data-email="{{ $data->email }}" data-phone="{{ $data->sdt }}"
-                                                data-birthday="{{ $data->ngaySinh }}" data-address="{{ $data->diaChi }}"
+                                                data-name="{{ $data->status }}" data-cash="{{ $data->cash }}"
                                                 data-desc="{{ $data->desc }}"><i class="ri-pencil-line mr-0"></i></a>
                                             <a class="badge bg-warning mr-2 delete" href="#" title="Delete"
                                                 data-toggle="modal" data-target="#deleteModal"
                                                 data-id="{{ $data->id }}"><i class="ri-delete-bin-line mr-0"></i></a>
                                         </div>
                                     </td>
-                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
@@ -70,44 +58,63 @@
         </div>
         <!-- Page end  -->
     </div>
-    <!-- Edit Modal HTML -->
-    <div id="editModal" class="modal fade">
+    <!-- Add Modal HTML -->
+    <div id="addModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="editForm" action="{{ route('update-customer') }}" method="POST">
+                <form id="addForm" action="{{ route('payment_slips.store') }}" method="POST">
                     @csrf
                     <div class="modal-header">
-                        <h4 class="modal-title">Chỉnh Sửa Thông Tin Khách Hàng</h4>
+                        <h4 class="modal-title">Tạo Phiếu Nhập Chi</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>Họ Tên</label>
-                            <input type="text" class="form-control" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="hidden" name="id">
-                            <input type="text" class="form-control" name="email">
-                        </div>
-                        <div class="form-group">
-                            <label>SĐT</label>
-                            <input type="text" class="form-control" name="phone" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Ngày Sinh</label>
-                            <input type="date" class="form-control" name="birthday">
-                        </div>
-                        <div class="form-group">
-                            <label>Giới Tính</label>
-                            <select name="sex" class="selectpicker form-control" data-style="py-0">
-                                <option value="Nam">Nam</option>
-                                <option value="Nữ">Nữ</option>
+                            <label>Phân Loại</label>
+                            <select name="name" class="selectpicker form-control" data-style="py-0">
+                                <option value="0">Nhập Tiền Mặt</option>
+                                <option value="1">Phiếu Chi</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Địa Chỉ</label>
-                            <input type="text" class="form-control" name="address">
+                            <label>Tiền Mặt (VNĐ)</label>
+                            <input type="number" class="form-control" name="cash" placeholder="Nhập tiền mặt" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Mô Tả</label>
+                            <input type="text" class="form-control" name="desc" placeholder="Nhập mô tả">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy">
+                        <input type="submit" class="btn btn-info" value="Tạo Phiếu">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Edit Modal HTML -->
+    <div id="editModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="editForm" action="{{ route('payment_slips.update') }}" method="POST">
+                    @csrf
+                    <div class="modal-header">
+                        <h4 class="modal-title">Chỉnh Sửa Phiếu</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Phân Loại</label>
+                            <select name="name" class="selectpicker form-control" data-style="py-0">
+                                <option value="0">Nhập Tiền Mặt</option>
+                                <option value="1">Phiếu Chi</option>
+                            </select>
+                        </div>
+                        <input type="hidden" name="id">
+                        <div class="form-group">
+                            <label>Tiền Mặt (VNĐ)</label>
+                            <input type="number" class="form-control" name="cash" required>
                         </div>
                         <div class="form-group">
                             <label>Mô Tả</label>
@@ -118,23 +125,24 @@
                         <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy">
                         <input type="submit" class="btn btn-info" value="Lưu">
                     </div>
-                </form>
             </div>
+            </form>
         </div>
+    </div>
     </div>
 
     <!-- Delete Modal HTML -->
     <div id="deleteModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="deleteForm" action="{{ route('delete-customer') }}" method="POST">
+                <form id="deleteForm" action="{{ route('payment_slips.delete') }}" method="POST">
                     @csrf
                     <div class="modal-header">
-                        <h4 class="modal-title">Xóa Khách Hàng</h4>
+                        <h4 class="modal-title">Xóa Phiếu</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <p>Bạn có chắc chắn muốn xóa khách hàng này?</p>
+                        <p>Bạn có chắc chắn muốn xóa phiếu này?</p>
                         <input type="hidden" name="id" id="delete-id">
                     </div>
                     <div class="modal-footer">
@@ -154,24 +162,16 @@
                 var button = $(event.relatedTarget);
                 var id = button.data('id');
                 var name = button.data('name');
-                var sex = button.data('sex');
-                var email = button.data('email');
-                var phone = button.data('phone');
-                var birthday = button.data('birthday');
-                var address = button.data('address');
+                var cash = button.data('cash');
                 var desc = button.data('desc');
                 var modal = $(this);
                 modal.find('input[name="id"]').val(id);
                 modal.find('input[name="name"]').val(name);
-                modal.find('input[name="phone"]').val(phone);
-                modal.find('input[name="email"]').val(email);
-                modal.find('input[name="sex"]').val(sex);
-                modal.find('input[name="address"]').val(address);
-                modal.find('input[name="birthday"]').val(formatDate(birthday));
+                modal.find('input[name="cash"]').val(cash);
                 modal.find('input[name="desc"]').val(desc);
 
                 // Cập nhật giá trị cho thẻ select
-                modal.find('select[name="sex"]').val(sex).change();
+                modal.find('select[name="name"]').val(name).change();
             });
 
             // Populate delete modal with id

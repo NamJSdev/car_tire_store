@@ -23844,7 +23844,7 @@ button.close-popup {
     border-top: 1px solid #676e8a;
 }
 .nav-pills .nav-link.active {
-    color: #32bdea;
+    color: #fff;
     background: #88dffb;
 }
 .nav-pills .show > .nav-link {

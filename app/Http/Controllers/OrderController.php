@@ -13,9 +13,20 @@ use Carbon\Carbon;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('pages.order');
+        $query = Order::query();
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('maDonHang', 'LIKE', "%{$search}%")
+                ->orWhereHas('customer', function ($query) use ($search) {
+                    $query->where('sdt', 'LIKE', "%{$search}%");
+                });
+        }
+
+        $datas = $query->orderBy('created_at', 'desc')->paginate(10);
+        return view('pages.order', compact('datas'));
     }
     public function store(Request $request)
     {
@@ -49,7 +60,7 @@ class OrderController extends Controller
             $order->accountID = $request->staff_id;
             $order->cash = $request->cash_amount;
             $order->payCash = $request->bank_amount;
-            $order->tienNo = $request->duNo ? $request->total_amount - $request->cash_amount - $request->bank_amount : 0;
+            $order->tienNo = $request->debt_amount;
             $order->ngayTao = Carbon::now();
             $order->capNhat = Carbon::now();
             $order->status = 1; // Assuming 1 is the default status
@@ -69,6 +80,7 @@ class OrderController extends Controller
 
                 // Update product stock
                 $productRecord->tonKho -= $product['quantity'];
+                $productRecord->luongBan += $product['quantity'];
                 $productRecord->save();
 
                 // Save warranty information
@@ -90,10 +102,87 @@ class OrderController extends Controller
 
             DB::commit();
 
-            return response()->json(['message' => 'Order saved successfully'], 200);
+            return response()->json([
+                'message' => 'Order saved successfully',
+                'order_id' => $order->id, // Trả về order_id để sử dụng trong JavaScript
+            ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['message' => 'Có lỗi xảy ra. Vui lòng thử lại!', 'error' => $e->getMessage()], 500);
+        }
+    }
+    public function orderInvoice($orderId)
+    {
+        // Tìm đơn hàng theo ID với các sản phẩm liên quan
+        $order = Order::with('products')->findOrFail($orderId);
+
+        // Lấy danh sách sản phẩm từ đơn hàng
+        $products = $order->products;
+
+        // Lặp qua các sản phẩm để lấy thông tin chi tiết
+        foreach ($products as $product) {
+            // Tìm sản phẩm trong bảng Products dựa vào productID từ pivot table
+            $sanPham = Product::findOrFail($product->pivot->productID);
+            // Lấy ra các thông tin cần thiết từ bảng trung gian
+            $tenHang = $sanPham->tenHang; // Ví dụ: 'tenHang' là tên cột chứa tên sản phẩm trong bảng Products
+            $soLuong = $product->pivot->soLuong;
+            $thanhTien = $product->pivot->thanhTien;
+            $donGia = $product->pivot->donGia;
+
+            // Các xử lý khác tại đây nếu cần
+        }
+
+        // Trả về view hoặc response JSON theo yêu cầu của bạn
+        return view('pages.order-detail', compact('order', 'products'));
+    }
+
+    public function cancel(Request $request)
+    {
+        $order = Order::with('products')->findOrFail($request->id);
+
+        // Cập nhật trạng thái đơn hàng thành 3
+        $order->status = 3;
+        $order->capNhat = Carbon::now();
+        $order->save();
+
+        // Cộng lại số lượng hàng hóa vào kho
+        foreach ($order->products as $product) {
+            $productToUpdate = Product::findOrFail($product->pivot->productID);
+            $productToUpdate->tonKho += $product->pivot->soLuong;
+            $productToUpdate->luongBan -= $product->pivot->soLuong;
+            $productToUpdate->save();
+        }
+
+        return redirect()->route('orders.index')->with('success', 'Hủy Đơn Hàng Thành Công.');
+    }
+    public function delete(Request $request)
+    {
+        $id = $request->id;
+        // Tìm đơn hàng theo ID
+        $order = Order::findOrFail($id);
+
+        // Bắt đầu transaction để đảm bảo toàn bộ các thao tác được thực hiện thành công hoặc rollback nếu có lỗi
+        DB::beginTransaction();
+
+        try {
+            // Xóa các bản ghi liên quan trong bảng trung gian (order_and_product)
+            DB::table('order_and_product')->where('orderID', $id)->delete();
+
+            // Xóa các bản ghi bảo hành liên quan (nếu có)
+            DB::table('warranties')->where('orderID', $id)->delete();
+
+            // Xóa chính đơn hàng
+            $order->delete();
+
+            // Commit transaction
+            DB::commit();
+
+            return redirect()->route('orders.index')->with('success', 'Đơn hàng đã được xóa thành công.');
+        } catch (\Exception $e) {
+            // Rollback transaction nếu có lỗi
+            DB::rollBack();
+
+            return redirect()->route('orders.index')->with('error', 'Có lỗi xảy ra khi xóa đơn hàng.');
         }
     }
 }

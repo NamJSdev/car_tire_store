@@ -30,6 +30,7 @@
                     data-bao-hanh="{{ $data->thoiGianBaoHanh }}" data-luong-ban="{{ $data->luongBan }}"
                     data-image="{{ asset('storage/' . $data->image) }}">
                     <i class="ri-eye-line mr-0"></i></a>
+                @if(Auth::user()->roleID == 1) <!-- Admin -->
                 <a class="badge bg-success mr-2 edit" href="#" title="Edit" data-toggle="modal"
                     data-target="#editModal" 
                     data-id="{{ $data->id }}" 
@@ -47,6 +48,7 @@
                 <a class="badge bg-warning mr-2 delete" href="#" title="Delete" data-toggle="modal"
                     data-target="#deleteModal" data-id="{{ $data->id }}"><i
                         class="ri-delete-bin-line mr-0"></i></a>
+                @endif
             </div>
         </td>
     </tr>

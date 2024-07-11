@@ -10,9 +10,11 @@
                         <h4 class="mb-3">Danh Sách Sản Phẩm</h4>
                     </div>
                     <div>
+                        @if(Auth::user()->roleID == 1) <!-- Admin -->
                         <a href="{{ route('products.create') }}" class="btn btn-primary add-list"><i class="las la-plus"></i>
                             Thêm
                             Sản Phẩm Mới</a>
+                        @endif
                         <button id="toggleFiltersButton" class="btn btn-secondary ml-2"><i class="las la-filter"></i>Bộ
                             Lọc</button>
                     </div>
@@ -123,6 +125,7 @@
             </div>
         </div>
     </div>
+    @if(Auth::user()->roleID == 1) <!-- Admin -->
     <!-- Edit Modal HTML -->
     <div id="editModal" class="modal fade">
         <div class="modal-dialog" style="max-width: 70%">
@@ -238,6 +241,7 @@
             </div>
         </div>
     </div>
+    @endif
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {

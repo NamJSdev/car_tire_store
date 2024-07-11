@@ -7,9 +7,26 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    public function getList()
+    public function getList(Request $request)
     {
-        $datas = Customer::orderBy('created_at', 'desc')->paginate(10);
+        $query = Customer::orderBy('created_at', 'desc');
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('sdt', 'like', '%' . $search . '%')
+                    ->orWhere('hoTen', 'like', '%' . $search . '%');
+            });
+        }
+
+        $datas = $query->paginate(10);
+
+        // Tính toán duNo và soSanPhamDaMua cho từng khách hàng
+        foreach ($datas as $customer) {
+            $customer->duNo = $customer->orders->sum('tienNo');
+            $customer->soSanPhamDaMua = $customer->orderProducts->sum('soLuong');
+        }
+
         return view('pages.customer', compact('datas'));
     }
 
