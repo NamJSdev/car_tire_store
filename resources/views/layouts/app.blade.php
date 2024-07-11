@@ -8,7 +8,7 @@
 
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="https://templates.iqonic.design/posdash/html/assets/images/favicon.ico" />
+    <link rel="shortcut icon" href="{{asset('assets/images/logo.png')}}" />
     <link rel="stylesheet" href="{{ asset('assets/css/backend-plugin.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/backende209.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/@fortawesome/fontawesome-free/css/all.min.css') }}" />
@@ -33,6 +33,12 @@
 </head>
 
 <body>
+    <!-- loader Start -->
+    <div id="loading">
+        <div id="loading-center">
+        </div>
+  </div>
+  <!-- loader END -->
     <div class="wrapper">
         @include('layouts.sider-bar')
         @include('layouts.header')
