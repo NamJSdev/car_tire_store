@@ -26,9 +26,7 @@
                                 <th>Ngày Sinh</th>
                                 <th>Đã Mua</th>
                                 <th>Dư Nợ</th>
-                                @if(Auth::user()->roleID == 1) <!-- Admin -->
                                 <th>Action</th>
-                                @endif
                             </tr>
                         </thead>
                         <tbody class="ligth-body">
@@ -46,7 +44,6 @@
                                     <td>{{ \Carbon\Carbon::parse($data->ngaySinh)->format('d-m-Y') }}</td>
                                     <td>{{ $data->soSanPhamDaMua }} SP</td>
                                     <td>{{ number_format($data->duNo, 0, ',', '.') . ' đ' }}</td>
-                                    @if(Auth::user()->roleID == 1) <!-- Admin -->
                                     <td>
                                         <div class="d-flex align-items-center list-action">
                                             <a class="badge bg-success mr-2 edit" href="#" title="Edit"
@@ -55,12 +52,18 @@
                                                 data-email="{{ $data->email }}" data-phone="{{ $data->sdt }}"
                                                 data-birthday="{{ $data->ngaySinh }}" data-address="{{ $data->diaChi }}"
                                                 data-desc="{{ $data->desc }}"><i class="ri-pencil-line mr-0"></i></a>
-                                            <a class="badge bg-warning mr-2 delete" href="#" title="Delete"
-                                                data-toggle="modal" data-target="#deleteModal"
-                                                data-id="{{ $data->id }}"><i class="ri-delete-bin-line mr-0"></i></a>
+                                            <!-- Admin -->
+                                            <a class="badge bg-info mr-2 duNo" href="#" title="Cập Nhật Dư Nợ"
+                                                data-toggle="modal" data-target="#duNoModal"
+                                                data-id="{{ $data->id }}"><i class="la la-money mr-0"></i></a>
+                                            @if (Auth::user()->roleID == 1)
+                                                <a class="badge bg-warning mr-2 delete" href="#" title="Delete"
+                                                    data-toggle="modal" data-target="#deleteModal"
+                                                    data-id="{{ $data->id }}"><i
+                                                        class="ri-delete-bin-line mr-0"></i></a>
+                                            @endif
                                         </div>
                                     </td>
-                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
@@ -145,6 +148,33 @@
             </div>
         </div>
     </div>
+
+    <!-- Du No Modal HTML -->
+    <div id="duNoModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="duNoForm" action="{{route('customers.duNo')}}" method="POST">
+                    @csrf
+                    <div class="modal-header">
+                        <h4 class="modal-title">Cập Nhật Dư Nợ</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Tiền Khách Hàng Trả</label>
+                            <input type="number" class="form-control" name="duNo" required placeholder="Nhập Tiền Khách Hàng Trả">
+                        </div>
+                        <p>Bạn có chắc chắn khách hàng đã trả?</p>
+                        <input type="hidden" name="id" id="duNo-id">
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Hủy">
+                        <input type="submit" class="btn btn-info" value="Cập Nhật">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -179,6 +209,12 @@
                 var id = $(this).data('id');
                 console.log(id)
                 $('#delete-id').val(id);
+            });
+            // Populate delete modal with id
+            $('.duNo').click(function() {
+                var id = $(this).data('id');
+                console.log(id)
+                $('#duNo-id').val(id);
             });
         });
         // Function to format date to YYYY-MM-DD

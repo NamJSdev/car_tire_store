@@ -45,7 +45,8 @@ Route::post('/tao-moi-khach-hang', [CustomerController::class, 'createCustomer']
 // Route cho việc cập nhật thông tin khách hàng
 Route::post('/cap-nhat-thong-tin-khach-hang', [CustomerController::class, 'update'])->name('update-customer')->middleware('auth');
 // Route cho việc xóa khách hàng
-Route::post('/xoa-khach-hang', [CustomerController::class, 'delete'])->name('delete-customer')->middleware('auth');
+Route::post('/xoa-khach-hang', [CustomerController::class, 'delete'])->name('delete-customer')->middleware('admin');
+Route::post('/cap-nhat-du-no', [CustomerController::class, 'duNo'])->name('customers.duNo')->middleware('auth');
 
 // Route xử lý thêm mới danh mục
 Route::get('/danh-muc/form-khoi-tao', [CategoryController::class, 'create'])->name('categories.create')->middleware('admin');
