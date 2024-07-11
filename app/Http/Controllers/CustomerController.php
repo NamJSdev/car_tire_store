@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -109,5 +110,50 @@ class CustomerController extends Controller
         Customer::destroy($request->id);
 
         return redirect()->route('danh-sach-khach-hang')->with('success', 'Tài khoản đã được xóa thành công.');
+    }
+    public function duNo(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'id' => 'required|integer',
+            'duNo' => 'required|numeric',  // Ensure duNo is numeric for calculation
+        ]);
+
+        // Find the customer's orders
+        $orders = Order::where('customerID', $request->id)->get();
+
+        if ($orders->isEmpty()) {
+            return redirect()->route('danh-sach-khach-hang')->with('error', 'Không tìm thấy đơn hàng nào của khách hàng này.');
+        }
+
+        // Calculate the total outstanding debt for the customer
+        $totalDebt = $orders->sum('tienNo');
+
+        // The amount the customer has paid
+        $amountPaid = $request->duNo;
+
+        // Check if the amount paid is greater than the total debt
+        if ($amountPaid > $totalDebt) {
+            return redirect()->route('danh-sach-khach-hang')->with('error', 'Số tiền trả lớn hơn số tiền nợ.');
+        }
+
+        // Calculate the new debt
+        $newDebt = $totalDebt - $amountPaid;
+
+        // Update the tienNo for each order
+        foreach ($orders as $order) {
+            if ($amountPaid <= 0) break;
+
+            if ($order->tienNo <= $amountPaid) {
+                $amountPaid -= $order->tienNo;
+                $order->tienNo = 0;
+            } else {
+                $order->tienNo -= $amountPaid;
+                $amountPaid = 0;
+            }
+            $order->save();
+        }
+
+        return redirect()->route('danh-sach-khach-hang')->with('success', 'Cập nhật dư nợ cho khách hàng thành công.');
     }
 }
