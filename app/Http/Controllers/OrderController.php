@@ -153,6 +153,12 @@ class OrderController extends Controller
             $productToUpdate->save();
         }
 
+        // Tìm và xóa các bản ghi bảo hành liên quan đến orderID
+        $warranties = Warranty::where('orderID', $order->id)->get();
+        foreach ($warranties as $warranty) {
+            $warranty->delete();
+        }
+
         return redirect()->route('orders.index')->with('success', 'Hủy Đơn Hàng Thành Công.');
     }
     public function delete(Request $request)
